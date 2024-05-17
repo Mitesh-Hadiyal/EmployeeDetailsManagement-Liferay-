@@ -1,0 +1,5 @@
+javax.portlet.title.emp_crud_portlet_EmpCrudPortlet=EmpCrud
+empcrud.caption=Hello from EmpCrud!
+auto.deploy.enabled=true
+auto.deploy.deploy.dir=${liferay.home}/deploy
+auto.deploy.interval=1000

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="empS.model.Employee">
+		<field name="empId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="empName" type="String" />
+		<field name="surname" type="String" />
+		<field name="gender" type="String" />
+		<field name="hobbies" type="String" />
+		<field name="salary" type="long" />
+		<field name="email" type="String" />
+		<field name="phone" type="long" />
+	</model>
+</model-hints>

@@ -1,0 +1,290 @@
+<%@ include file="/init.jsp" %>
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
+<%@ page import="java.util.List" %>
+
+
+<portlet:actionURL name="addEmployee" var="addStudentActionURL"/>
+
+ 
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  </head>
+  <body>
+
+	<c:if test="${not empty Success}">
+		<div class="alert alert-success alert-dismissible">
+			<span>Employee added Successfully</span>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			
+		</div>
+	</c:if>
+	<c:if test="${not empty Deleted}">
+		<div class="alert alert-success alert-dismissible">
+			<span>Employee Record Deleted Successfully</span>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+	</c:if>
+	
+	<c:if test="${not empty Update}">
+		<div class="alert alert-success alert-dismissible">
+			<span>Employee Record Updated Successfully</span>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="refresh()"></button>
+		</div>
+	</c:if>
+	
+	<c:if test="${not empty Failure}">
+		<div class="alert alert-danger alert-dismissible">
+			<span>Employee Record Not Inserted..!!!</span>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+	</c:if>
+	
+	<c:if test="${not empty NotUpdated}">
+		<div class="alert alert-danger alert-dismissible">
+			<span>Employee Record Not Updated..!!!</span>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+	</c:if>
+	
+	<div class="d-flex my-3">
+		<div>
+			<i class="fa-solid fa-user-tie" style="font-size:40px"></i>
+		</div>	
+		<div class="mt-1 ms-3">
+			<h3>Employee's Details </h3>	
+		</div>
+		<div style="margin-left:570px">	
+			<button id="AddBTN" type="button" class="btn btn-primary me" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@fat" onclick="addHide()"><i class="fa-solid fa-user-plus"></i>&nbsp;&nbsp;&nbsp;Add Employee</button>
+		</div>
+	</div>
+	
+	
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Your Details...</h1>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="refresh()"></button>
+	      </div>
+	      
+	      <aui:form action="<%=addStudentActionURL %>" name="employeeForm" method="POST">
+	      	<div class="modal-body">
+
+	 			<aui:input name="empId" type="hidden" id="empId" label="Employee ID">
+			 		<aui:validator name="digits"/>
+				</aui:input>
+ 		
+
+				<aui:input name="employeeName"  id="employeeName" label="Employee Name" >
+			 		<aui:validator name="required"/>
+			 		<aui:validator name="alpha"/>
+				</aui:input>
+				
+				<aui:input name="surName" id="surName" label="Surname" >
+			 		<aui:validator name="required"/>
+			 		<aui:validator name="alpha"/>
+				</aui:input>
+				
+				<div class="d-flex mb-3">
+					<label class="me-2" >Gender : </label>
+					<aui:input label="Male" id="male" name="gdr" type="radio" value="Male" checked="true" />
+					<div class="ms-2">
+						<aui:input label="Female" id="female" name="gdr" type="radio" value="Female" />
+					</div>
+	          	</div>
+	          	
+	          	<div class="d-flex">
+			        <label>Hobbies : </label>
+			        <div class="mx-1">
+				 		<aui:input  name="hobbiee" id="playing" checked="false" type="checkbox" value="Playing" label="Playing" />
+					</div>
+					<div class="mx-1">
+						<aui:input  name="hobbiee" id="singing" checked="false" type="checkbox" value="Singing" label="Singing" />
+					</div>
+					<div class="mx-1">
+						<aui:input  name="hobbiee" id="reading" checked="false" type="checkbox" value="Reading" label="Reading" />
+					</div>
+					<div class="mx-1">
+						<aui:input  name="hobbiee" id="travelling" checked="false" type="checkbox" value="Travelling" label="Travelling" />
+					</div>
+	          	</div>	          
+	          
+	            <aui:input name="slry" id="salary" label="Salary" >
+		 		  <aui:validator name="required"/>
+		 		  <aui:validator name="digits"/>
+			    </aui:input>
+			
+				<aui:input name="emails" id="email" label="Email">
+			 		<aui:validator name="required"/>
+			 		<aui:validator name="email"/>	
+				</aui:input>
+			
+				<aui:input name="mobile" id="mobile" label="Phone No">
+			 		<aui:validator name="required"/>
+			 		<aui:validator name="digits"/>
+			 		<aui:validator name="minLength">10</aui:validator>
+			 		<aui:validator name="maxLength">10</aui:validator>
+				</aui:input>         
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="refresh()">Close</button>
+	        <aui:button type="submit" id="submitBTN" data-bs-dismiss="modal" value="Submit"></aui:button>
+	        <aui:button type="submit" id="updateBTN" data-bs-dismiss="modal" value="Update"></aui:button>
+	      </div>
+	      </aui:form>
+	    </div>
+	  </div>
+	</div>
+
+
+<portlet:defineObjects />
+<p id="empData" hidden>${employeeList}</p> 
+<p id="namespace" hidden>${namespace}</p>
+
+<!--  <portlet:actionURL name="deleteEmployee" var="deleteEmployeeActionURL"/> -->
+<table class="table table-striped">
+	<c:if test="${not empty employeeList}">
+	    <tr>
+	        <th>Name</th>
+	        <th>Surname</th>
+	        <th>Gender</th>
+	        <th>Hobbies</th>
+	        <th>Salary</th>
+	        <th>Email ID</th>
+	        <th>Phone No</th>
+	        <th colspan="2" style="width: 100px">Action</th>
+	    </tr>
+    </c:if>
+    <c:forEach items="${employeeList}" var="employee">
+		
+		<portlet:actionURL name="deleteEmployee" var="deleteEmployeeActionURL">
+		      <portlet:param name="EmployeeId" value="${employee.getEmpId()}"/>
+		</portlet:actionURL>
+		
+		<portlet:renderURL var="updateEmployeeRenderURL">
+			<portlet:param name="mvcPath" value="/update-employee.jsp"/>
+			<portlet:param name="empIdU" value="${employee.getEmpId()}"/>
+			<portlet:param name="empNameU" value="${employee.getEmpName()}"/>
+            <portlet:param name="surnameU" value="${employee.getSurname()}"/>
+            <portlet:param name="genderU" value="${employee.getGender()}"/>
+            <portlet:param name="hobbiesU" value="${employee.getHobbies()}"/>
+            <portlet:param name="salaryU" value="${employee.getSalary()}"/>
+            <portlet:param name="emailU" value="${employee.getEmail()}"/>
+            <portlet:param name="phoneU" value="${employee.getPhone()}"/>
+		</portlet:renderURL>
+		
+        <tr>	
+            <td>${employee.getEmpName()}</td>
+            <td>${employee.getSurname()}</td>
+            <td>${employee.getGender()}</td>
+            <td>${employee.getHobbies()}</td>
+            <td>${employee.getSalary()}</td>
+            <td>${employee.getEmail()}</td>
+            <td>${employee.getPhone()}</td> 
+            <td class="text-center" style="width:50px">
+	            <a href="#" id="myBtn" onclick="setData(${employee.getEmpId()})">
+					<i class="fa-solid fa-pen-to-square" data-bs-target="#exampleModal" data-bs-toggle="modal" data-bs-whatever="@fat" onclick="updateHide()"></i>	                      
+	            </a>	            
+			</td>
+            <td class="text-center" style="width:50px">
+            	<a href="<%=deleteEmployeeActionURL %>" name="deleteEmployee" onclick="return confirm('Are you sure you want to delete this item?');">
+					<i class="fa-solid fa-trash-arrow-up"></i>
+				</a>   		
+			</td>	
+         </tr>
+    </c:forEach>
+    
+</table>
+<p id="p">
+hello
+</p>
+	<script>
+	
+	var nameSpace = document.getElementById("namespace").innerHTML;
+	function setData(id){
+		
+		console.log("iddd : "+id);
+		var data = document.getElementById("empData").innerHTML;
+		console.log("Data : " + data);
+		
+		console.log("Namespace : " + nameSpace);
+		var ans = JSON.parse(data);
+		
+		var anss = ans.filter((data)=>{
+			if(data.empId == id)
+			{
+				return data;
+			}
+		})
+		
+		document.getElementById(nameSpace+"empId").value=anss[0].empId;
+		document.getElementById(nameSpace+"employeeName").value=anss[0].empName;
+		document.getElementById(nameSpace+"surName").value=anss[0].surname;
+		
+		document.getElementById(nameSpace+"salary").value=anss[0].salary;
+		document.getElementById(nameSpace+"email").value=anss[0].email;
+		document.getElementById(nameSpace+"mobile").value=anss[0].phone;
+		
+		const hobbieArray = anss[0].hobbies.split(" ");	
+		if(hobbieArray.includes("Playing"))	{
+			var play = document.getElementById(nameSpace+"playing").checked=true;
+		}
+		if(hobbieArray.includes("Singing"))	{
+			var sing = document.getElementById(nameSpace+"singing").checked=true;
+		}
+		if(hobbieArray.includes("Travelling")){
+			document.getElementById(nameSpace+"travelling").checked=true;
+		}
+		if(hobbieArray.includes("Reading"))	{
+			document.getElementById(nameSpace+"reading").checked=true;
+		}	
+		
+		if(anss[0].gender == "Male") {
+			document.getElementById(nameSpace+"male").checked=true;
+		}else{
+			document.getElementById(nameSpace+"female").checked=true;
+		}
+ 	}
+	function refresh(){
+		location.reload();
+	}
+	function addHide(){
+		var update = document.getElementById(nameSpace+"updateBTN");
+		update.style.display="none";
+	}
+	function updateHide(){
+		var submit = document.getElementById(nameSpace+"submitBTN");
+		submit.style.display="none";
+	}
+	document.getElementById("submitBTN").addEventListener("click", myFunction(){
+		
+		var name = document.getElementById(nameSpace+"employeeName").value;
+		var surname = document.getElementById(nameSpace+"surName").value;
+		
+		var salary = document.getElementById(nameSpace+"salary").value;
+		var email = document.getElementById(nameSpace+"email").value;
+		var mobile = document.getElementById(nameSpace+"mobile").value;
+		
+		console.log(name + surname + salary + email + mobile);
+		
+	})
+	</script>
+	<script>
+	$(document).ready(function(){
+		  $('.submitClass').click(function(){
+		    alert("The paragraph was clicked.");
+		  });
+		  
+		});	
+	
+	</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  </body>
+</html>

@@ -1,0 +1,254 @@
+package emp.crud.portlet.portlet;
+
+import com.liferay.counter.kernel.service.CounterLocalService;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.util.Validator;
+import empS.model.Employee;
+import empS.service.EmployeeLocalService;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.Portlet;
+import javax.portlet.PortletException;
+import javax.portlet.ProcessAction;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+
+import org.jsoup.select.Evaluator.IsEmpty;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
+@Component(
+   immediate = true,
+   property = {"javax.portlet.init-param.add-process-action-success-action=false",
+			    "com.liferay.portlet.display-category=category.sample", 
+			    "com.liferay.portlet.header-portlet-javascript=/js/script.js",
+			    "com.liferay.portlet.header-portlet-css=/css/main.css", 
+			    "com.liferay.portlet.instanceable=true", 
+			    "javax.portlet.display-name=EmpCrud", 
+			    "javax.portlet.init-param.template-path=/", 
+			    "javax.portlet.init-param.view-template=/view.jsp", 
+			    "javax.portlet.name=emp_crud_portlet_EmpCrudPortlet", 
+			    "javax.portlet.resource-bundle=content.Language", 
+			    "javax.portlet.security-role-ref=power-user,user"},
+   service = {Portlet.class}
+)
+public class EmpCrudPortlet extends MVCPortlet {
+	   
+   @Reference
+   CounterLocalService counterLocalService;
+   @Reference
+   EmployeeLocalService employeeLocalService;
+
+   @ProcessAction(name = "addEmployee")
+   public void addEmployee(ActionRequest actionRequest, ActionResponse actionResponse) 
+   {
+      String empIdString = actionRequest.getParameter("empId");
+      long empId;
+      
+      if(empIdString.equals(""))
+      {
+    	  empId = counterLocalService.increment();
+      }else {
+    	  empId = Long.parseLong(empIdString);  
+      }
+      
+      String empName = actionRequest.getParameter("employeeName");
+      String surname = actionRequest.getParameter("surName");
+      String gender = actionRequest.getParameter("gdr");
+      String[] hobbies = actionRequest.getParameterValues("hobbiee");
+      String hobbie =  String.join(" ", hobbies);
+      int salary = Integer.parseInt(actionRequest.getParameter("slry"));
+      String email = actionRequest.getParameter("emails");
+      long phone = Long.parseLong(actionRequest.getParameter("mobile"));
+
+      if(validateEmail(email,empId))
+      {
+    	  	Employee employee = null;
+	  		try {
+	  			employee = employeeLocalService.getEmployee(empId);
+	  		} catch (PortalException e) {
+	  			e.printStackTrace();
+	  		}
+//	        System.out.println("Employee : "+ employee);
+	        boolean newEmployee=false;
+	        if(employee == null)
+	        {
+	        	newEmployee = true;
+	        	employee = this.employeeLocalService.createEmployee(empId);
+	        	employee.setEmpId(empId);
+	        }
+			  employee.setEmpName(empName);
+			  employee.setSurname(surname);
+			  employee.setGender(gender);
+			  employee.setHobbies(hobbie);
+			  employee.setSalary((long)salary);
+			  employee.setEmail(email);
+			  employee.setPhone(phone);
+	        
+			if(newEmployee)
+			{
+				this.employeeLocalService.addEmployee(employee);
+				System.out.println("Data added Successfully");
+				actionRequest.setAttribute("Message", "added");
+				actionRequest.setAttribute("MessageValue", empName);
+			}else {
+				employeeLocalService.updateEmployee(employee);        
+				System.out.println("Data Updated Successfully");		
+		        actionRequest.setAttribute("Message", "update");
+		        actionRequest.setAttribute("MessageValue", empName);
+			}
+      }else {
+    	  System.out.println("Email already exists..!");
+    	  actionRequest.setAttribute("Message", "notAdded");
+		  actionRequest.setAttribute("MessageValue", email);
+		  System.out.println("Data Not Inserted...!");
+      }
+   }
+
+   public void render(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException 
+   {
+      List<Employee> employeeList = this.employeeLocalService.getEmployees(-1, -1);
+      renderRequest.setAttribute("employeeList", employeeList);
+      super.render(renderRequest, renderResponse);
+   }
+
+   @ProcessAction(name = "deleteEmployee")
+   public void deleteEmployee(ActionRequest actionRequest, ActionResponse actionResponse) throws IOException, PortletException 
+   {
+      Long empId = Long.parseLong(actionRequest.getParameter("EmployeeId"));	
+      try {
+         this.employeeLocalService.deleteEmployee(empId);
+         System.out.println("Deleted Successfully...!");
+         actionRequest.setAttribute("Message", "delete");
+         actionRequest.setAttribute("MessageValue", empId);
+      } catch (PortalException var5) {
+    	  System.out.println("Error : "+var5.getMessage());
+      }
+   }
+   
+   public boolean validateEmail(String email, long id)
+   {
+	   Employee employee = employeeLocalService.findByEmailAddress(email); 
+
+	   if(null == employee)
+	   {  
+		   return true;
+	   }
+	   else {
+		   if(employee.getEmpId()==id)
+		   {
+			   return true;
+		   }else {
+			   return false;
+		   }
+	   }
+   }
+}
+   
+   
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Old Logic for validate function
+
+  /* List<Employee> employeeList = this.employeeLocalService.getEmployees(-1, -1);
+   Iterator<Employee> i = employeeList.iterator();
+   
+   int c=0;
+   while(i.hasNext())
+   {
+	   if(i.next().getEmail().equals(email))
+	   {
+		   c++;
+	   }
+   }
+   String emailSame="";
+   if(id != 0)
+   {		   
+	   try {
+		   Employee employee = employeeLocalService.getEmployee(id);
+		   emailSame = employee.getEmail();
+	   } 
+	   catch (PortalException e) {
+		   e.printStackTrace();
+	   }
+   } 
+   if(c==0 || emailSame.equals(email)){
+	   return true;
+   }
+   else {
+	   return false;
+   }*/
+
+////////////////////////////////////////////////////////////////////////////////////
+
+//Old logic for add and update
+
+//Iterator<Employee> it = employeeList.iterator();
+//int empExists=0;
+//if(Validator.isNotNull(employeeList))
+//{
+//	  while(it.hasNext())
+//	  {
+//		  if(it.next().getEmpId() == empId)
+//		  {
+//			  empExists++;
+//		  }
+//	  }
+//}
+//if(empExists==1)
+//{
+//	  if(validateEmail(email,empId))
+//	  {
+//		  Employee employee = null;
+//		  try {
+//			  employee = this.employeeLocalService.getEmployee(empId);
+//		  } catch (PortalException e) {
+//			  e.printStackTrace();
+//		  }
+//		  employee.setEmpId(empId);
+//		  employee.setEmpName(empName);
+//		  employee.setSurname(surname);
+//		  employee.setGender(gender);
+//		  employee.setHobbies(hobbie);
+//		  employee.setSalary((long)salary);
+//		  employee.setEmail(email);
+//		  employee.setPhone(phone);
+//		  
+//		  employeeLocalService.updateEmployee(employee);        
+//		  System.out.println("Data Updated Successfully");		
+//        actionRequest.setAttribute("Message", "update");
+//        actionRequest.setAttribute("MessageValue", empName);
+//	  }
+//	  else {
+//		  System.out.println("Email Already Exists...!");
+//        actionRequest.setAttribute("Message", "notUpdated");
+//        actionRequest.setAttribute("MessageValue", email);
+//	  }
+//}
+//else {
+//	  if(validateEmail(email,0))
+//	  {			  
+//		  Employee employee = this.employeeLocalService.createEmployee(empId);
+//		  employee.setEmpName(empName);
+//		  employee.setSurname(surname);
+//		  employee.setGender(gender);
+//		  employee.setHobbies(hobbie);
+//		  employee.setSalary((long)salary);
+//		  employee.setEmail(email);
+//		  employee.setPhone(phone);
+//		  this.employeeLocalService.addEmployee(employee);
+//		  System.out.println("Data added Successfully");
+//		  
+//		  actionRequest.setAttribute("Message", "added");
+//		  actionRequest.setAttribute("MessageValue", empName);
+//	  }else {
+//		  actionRequest.setAttribute("Message", "notAdded");
+//		  actionRequest.setAttribute("MessageValue", email);
+//		  System.out.println("Data Not Inserted...!");
+//	  }
+//}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="emp.crud.portlet.constants.EmpCrudPortletKeys"/>
+<fullyQualifiedTypeName name="org.osgi.service.component.annotations.Reference"/>
+<fullyQualifiedTypeName name="com.liferay.portal.kernel.util.ParamUtil"/>
+<fullyQualifiedTypeName name="com.liferay.portal.kernel.util.GetterUtil"/>
+<fullyQualifiedTypeName name="javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter.DEFAULT"/>
+<fullyQualifiedTypeName name="java.lang.NullPointerException"/>
+<fullyQualifiedTypeName name="javax.portlet.ProcessAction"/>
+<fullyQualifiedTypeName name="javax.portlet.ActionRequest"/>
+<fullyQualifiedTypeName name="javax.portlet.ActionResponse"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="empS.service.EmployeeLocalService"/>
+<fullyQualifiedTypeName name="com.liferay.counter.kernel.service.CounterLocalService"/>
+<fullyQualifiedTypeName name="com.liferay.counter.kernel.service.CounterLocalServiceUtil"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="com.liferay.portal.kernel.util.Validator"/>
+<fullyQualifiedTypeName name="empS.model.Employee"/>
+<fullyQualifiedTypeName name="java.lang.Iterable"/>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="java.util.Arrays"/>
+<fullyQualifiedTypeName name="org.jsoup.select.Evaluator.IsEmpty"/>
+</qualifiedTypeNameHistroy>

@@ -1,0 +1,12 @@
+Bundle-Name: empS-api
+Bundle-SymbolicName: empS.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	empS.exception,\
+	empS.model,\
+	empS.service,\
+	empS.service.persistence
+-check: EXPORTS
+-consumer-policy: ${replacestring;${range;[==,==]};.*,(.*)];$1}
+-includeresource: META-INF/service.xml=../empS-service/service.xml
+-provider-policy: ${replacestring;${range;[==,==]};.*,(.*)];$1}

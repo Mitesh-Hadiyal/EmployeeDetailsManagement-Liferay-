@@ -1,0 +1,110 @@
+/*	var nameSpace = document.getElementById("namespace");
+*/	console.log("In JavaScript");
+/*	console.log("nameSpace :"+nameSpace);
+*/	function setData(id){
+		clearForm();
+		console.log("iddd : "+id);
+		var data = document.getElementById("empData").innerHTML;
+		console.log("Data : " + data);
+		
+		console.log("Namespace : " + nameSpace);
+		var ans = JSON.parse(data);
+		
+		var anss = ans.filter((data)=>{
+			if(data.empId == id)
+			{
+				return data;
+			}
+		})
+		
+		document.getElementById(nameSpace+"empId").value=anss[0].empId;
+		document.getElementById(nameSpace+"employeeName").value=anss[0].empName;
+		document.getElementById(nameSpace+"surName").value=anss[0].surname;
+		
+		document.getElementById(nameSpace+"salary").value=anss[0].salary;
+		document.getElementById(nameSpace+"email").value=anss[0].email;
+		document.getElementById(nameSpace+"mobile").value=anss[0].phone;
+		
+		const hobbieArray = anss[0].hobbies.split(" ");	
+		if(hobbieArray.includes("Playing"))	{
+			document.getElementById(nameSpace+"playing").checked=true;
+		}
+		if(hobbieArray.includes("Singing"))	{
+			document.getElementById(nameSpace+"singing").checked=true;
+		}
+		if(hobbieArray.includes("Travelling")){
+			document.getElementById(nameSpace+"travelling").checked=true;
+		}
+		if(hobbieArray.includes("Reading"))	{
+			document.getElementById(nameSpace+"reading").checked=true;
+		}	
+		
+		if(anss[0].gender == "Male") {
+			document.getElementById(nameSpace+"male").checked=true;
+		}else{
+			document.getElementById(nameSpace+"female").checked=true;
+		}
+ 	}
+
+	function clearForm()
+	{
+		document.getElementById(nameSpace+"empId").value="";
+		document.getElementById(nameSpace+"employeeName").value="";
+		document.getElementById(nameSpace+"surName").value="";
+		
+		document.getElementById(nameSpace+"salary").value="";
+		document.getElementById(nameSpace+"email").value="";
+		document.getElementById(nameSpace+"mobile").value="";
+		
+		document.getElementById(nameSpace+"playing").checked=false;
+		document.getElementById(nameSpace+"singing").checked=false;
+		document.getElementById(nameSpace+"travelling").checked=false;
+		document.getElementById(nameSpace+"reading").checked=false;
+		document.getElementById(nameSpace+"female").checked=false;
+		console.log("in clear form")
+	}
+	
+	function refresh(){
+		location.reload();
+	}
+	
+	function addHide(){
+		clearForm();
+		var update = document.getElementById(nameSpace+"updateBTN");
+		update.style.display="none";
+		var submit = document.getElementById(nameSpace+"submitBTN");
+		submit.style.display="block";
+	}
+	
+	function updateHide(){
+		var submit = document.getElementById(nameSpace+"submitBTN");
+		submit.style.display="none";
+		var update = document.getElementById(nameSpace+"updateBTN");
+		update.style.display="block";
+	}
+	
+	function validate()
+	{
+		var close = document.getElementById("closeBTN");
+		
+		var name = document.getElementById(nameSpace+"employeeName").value;
+		var surname = document.getElementById(nameSpace+"surName").value;
+		var salary = document.getElementById(nameSpace+"salary").value;
+		var s = Number(salary);
+		var email = document.getElementById(nameSpace+"email").value;
+		const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+		const isValidEmail = emailPattern.test(email);
+		
+		var mobile = document.getElementById(nameSpace+"mobile").value;
+		var m = Number(mobile);
+		
+		if(name != "" && surname != "" && salary != "" && email != "" && mobile != "" && mobile.length == 10 && !isNaN(m) && !isNaN(s) && isValidEmail && isNaN(name) && isNaN(surname))
+		{
+			close.click();
+		}else{
+			clearForm();
+			var reset = document.getElementById("resetBTN");
+			reset.click();
+			console.log("Else block")
+		}		
+	}

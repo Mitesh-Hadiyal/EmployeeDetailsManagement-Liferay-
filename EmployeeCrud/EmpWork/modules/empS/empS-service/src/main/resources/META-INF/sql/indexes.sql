@@ -1,0 +1,1 @@
+create index IX_E359D9E1 on Emp_Employee (email[$COLUMN_LENGTH:75$]);

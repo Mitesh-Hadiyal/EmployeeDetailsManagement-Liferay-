@@ -1,0 +1,181 @@
+<%@ include file="/init.jsp" %>
+
+<portlet:actionURL name="addEmployee" var="addStudentActionURL"/>
+
+<!doctype html>
+<html lang="en">
+	<head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />     
+	  	
+	  	<!-- jQuery data table CSS link -->
+	  	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	</head>
+	<body class="bg-warning">
+		<!-- Alert Messages. -->
+		<c:choose>
+		   <c:when test="${Message eq 'Failure'}">
+			   <div class="alert alert-danger alert-dismissible">
+					<span>${MessageValue}</span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="refresh()"></button>
+				</div>
+		   </c:when>
+		   <c:when test="${Message eq 'Success'}">
+			   <div class="alert alert-success alert-dismissible">
+					<span>${MessageValue}</span>
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="refresh()"></button>
+				</div>
+		   </c:when>
+		</c:choose>
+		
+		<h1>Auto-deploy Started</h1>
+		
+		<div class="d-flex my-3">
+			<div>
+				<i class="fa-solid fa-user-tie" style="font-size:40px"></i>
+			</div>	
+			<div class="mt-1 ms-3">
+				<h3>Employee's Details </h3>	
+			</div>
+			<div style="margin-left:570px">	
+				<button id="AddBTN" type="button" class="btn btn-info me" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@fat" onclick="addHide()"><i class="fa-solid fa-user-plus"></i>&nbsp;&nbsp;&nbsp;Add Employee</button>
+			</div>
+		</div>
+		
+		<!-- Modal Form for insert or update data. -->
+		<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content" style="overflow-y:scroll; height:95vh">
+		      <div class="modal-header">
+		        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Your Details...</h1>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="refresh()"></button>
+		      </div>
+		      <aui:form action="<%=addStudentActionURL %>" name="employeeForm" id="myForm" method="POST">
+		      	<div class="modal-body">
+		 			<aui:input name="empId" type="hidden" id="empId" label="Employee ID">
+				 		<aui:validator name="digits"/>
+					</aui:input>
+					<aui:input name="employeeName"  id="employeeName" label="Employee Name" >
+				 		<aui:validator name="required"/>
+				 		<aui:validator name="alpha"/>
+					</aui:input>
+					<aui:input name="surName" id="surName" label="Surname" >
+				 		<aui:validator name="required"/>
+				 		<aui:validator name="alpha"/>
+					</aui:input>
+					<div class="d-flex mb-3">
+						<label class="me-2" >Gender : </label>
+						<aui:input label="Male" id="male" name="gdr" type="radio" value="Male" checked="true" />
+						<div class="ms-2">
+							<aui:input label="Female" id="female" name="gdr" type="radio" value="Female" />
+						</div>
+		          	</div>
+		          	<div class="d-flex">
+				        <label>Hobbies : </label>
+				        <div class="mx-1">
+					 		<aui:input  name="hobbiee" id="playing" checked="false" type="checkbox" value="Playing" label="Playing" />
+						</div>
+						<div class="mx-1">
+							<aui:input  name="hobbiee" id="singing" checked="false" type="checkbox" value="Singing" label="Singing" />
+						</div>
+						<div class="mx-1">
+							<aui:input  name="hobbiee" id="reading" checked="false" type="checkbox" value="Reading" label="Reading" />
+						</div>
+						<div class="mx-1">
+							<aui:input  name="hobbiee" id="travelling" checked="false" type="checkbox" value="Travelling" label="Travelling" />
+						</div>
+		          	</div>	          
+		            <aui:input name="slry" id="salary" label="Salary" >
+			 		  <aui:validator name="required"/>
+			 		  <aui:validator name="digits"/>
+				    </aui:input>
+					<aui:input name="emails" id="email" label="Email">
+				 		<aui:validator name="required"/>
+				 		<aui:validator name="email"/>	
+					</aui:input>
+					<aui:input name="mobile" id="mobile" label="Phone No">
+				 		<aui:validator name="required"/>
+				 		<aui:validator name="digits"/>
+				 		<aui:validator name="minLength">10</aui:validator>
+				 		<aui:validator name="maxLength">10</aui:validator>
+					</aui:input>         
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" id="closeBTN" class="btn btn-secondary" data-bs-dismiss="modal" onclick="validate()">Close</button>
+		        <aui:button type="submit" id="submitBTN"  value="Submit" onclick="validate()"></aui:button>
+		        <aui:button type="submit" id="updateBTN" value="Update" onclick="validate()"></aui:button>
+		        <button type="reset" id="resetBTN" class="btn btn-secondary" value="Reset" hidden></button>
+		      </div>
+		      </aui:form>
+		    </div>
+		  </div>
+		</div>
+		
+		<!-- Action URL for delete a record. -->	
+		<portlet:actionURL name="deleteEmployee" var="tdeleteEmployeeActionURL">
+		      <portlet:param name="EmployeeId" value="${employee.getEmpId()}"/>
+		</portlet:actionURL>	
+		
+		<!-- Variables which is used in JS. -->
+		<input type="text" id="url" hidden value="${tdeleteEmployeeActionURL}">
+		<p id="empData" hidden>${employeeList}</p>
+		<p id="namespace" hidden>${namespace}</p>
+	
+		<!-- jQuery data table. -->
+		<table id="example" class="display bg-info" width="100%"></table>
+	</body>
+  	
+	<script type="text/javascript">
+ 		var datainString = document.getElementById("empData").innerHTML;
+		var dataSet = JSON.parse(datainString);
+	  	
+	 	dataSet.forEach(r => {
+	 	    var divPosition = document.createElement('div');
+	 	    divPosition.innerHTML = r.position;
+	 	    r.position = divPosition;
+	
+	 	    var divExtn = document.createElement('div');
+	 	    divExtn.innerHTML = r.extn;
+	 	    r.extn = divExtn;
+	 	});
+	
+		new DataTable('#example', {
+	 	    columns: [
+	 	        { title: 'Name', data: 'empName' },
+	 	        { title: 'Surname', data: 'surname' },
+	 	        { title: 'Gender', data: 'gender' },
+	 	        { title: 'Hobbies', data: 'hobbies' },
+	 	        { title: 'Salary', data: 'salary' },
+	 	        { title: 'Email ID', data: 'email' },
+	 	       	{ title: 'Phone No', data: 'phone' },
+	 	       	{	
+	 	       		 title: 'Action',
+	                 data: null,
+	                 className: "dt-center editor-delete",
+	                 orderable: false,
+	                 "mRender" : function ( data, type, row ) {
+	                     return '<i onClick="setData('+data.empId+')" style="color:rgb(49, 80, 242);" class="fa-solid fa-pen-to-square" data-bs-target="#exampleModal" data-bs-toggle="modal" data-bs-whatever="@fat"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="" onClick="deleteRow('+data.empId+')"><i style="color:red" class="fa-solid fa-trash-arrow-up"></i></a>';
+	                 }
+	            }
+	 	    ],
+	 	    data: dataSet
+	 	});
+		function updateRow(id)
+		{
+			console.log("Employee ID",id);
+		}
+		function deleteRow(id){
+			console.log("Employee ID",id);
+			
+			var urlone = document.getElementById("url").value;
+			console.log("urlone :"+urlone);
+			
+			var namespace = document.getElementById("namespace").innerHTML;
+	
+			var url = urlone+"&"+namespace+"EmployeeId="+id;
+			window.location.href=url;
+			
+		} 
+	</script>
+</html>

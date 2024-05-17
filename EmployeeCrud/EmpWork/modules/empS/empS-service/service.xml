@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.4.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_4_0.dtd">
+
+<service-builder dependency-injector="ds" package-path="empS">
+	<namespace>Emp</namespace>
+	<!--<entity data-source="sampleDataSource" local-service="true" name="Foo" remote-service="false" session-factory="sampleSessionFactory" table="foo" tx-manager="sampleTransactionManager uuid="true"">-->
+	<entity local-service="true" name="Employee" remote-service="true">
+
+		<!-- PK fields -->
+		<column name="empId" primary="true" type="long"></column>
+
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="empName" type="String"></column>
+		<column name="surname" type="String"></column>
+		<column name="gender" type="String"></column>
+		<column name="hobbies" type="String"></column>
+		<column name="salary" type="long"></column>
+		<column name="email" type="String"></column>
+		<column name="phone" type="long"></column>
+
+		<order>
+		    <order-column name="createDate" order-by="desc" />
+		</order>
+		<!-- References -->
+        <finder name="email" return-type="Employee">
+            <finder-column name="email"></finder-column>
+        </finder>
+
+		<reference entity="AssetEntry" package-path="com.liferay.portlet.asset" />
+		<reference entity="AssetTag" package-path="com.liferay.portlet.asset" />
+	</entity>
+</service-builder>
